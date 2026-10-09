@@ -1,30 +1,40 @@
-import java.util.Random;
-
-public class Main {
-    public static void main(String[] args) {
-        int[] sequence = new int[1000];
-        Random random = new Random();
-        for (int i = 0; i < 1000; i++) {
-            sequence[i] = random.nextInt(10000 + 1);
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+void main() {
+    Scanner scanner = new Scanner(System.in);
+    Process [] processes = new Process[3];
+    try{
+        System.out.println("\nЗапуск приложений");
+        for (int i = 0; i < 3; i++) {
+            System.out.println("Введите имя приложения " + (i + 1) + " (например, notepad.exe)");
+            String name = scanner.nextLine().trim().toLowerCase();
+            processes[i] = new ProcessBuilder(name).start();
+            System.out.println("Приложение запущенно");
         }
 
-        int minR = -1;
-        for (int i = 0; i < 1000; i++) {
-            for (int j = i + 1; j < 1000; j++) {
-                int product = sequence[i] * sequence[j];
-                if (product % 21 != 0) {
-                    continue;
-                }
-                if (minR == -1 || product < minR) {
-                    minR = product;
-                }
+        System.out.println("\nСписок запущенных приложений");
+        for (int i = 0; i < 3; i++) {
+            System.out.println("Процесс "+ (i + 1) + " работает "+ processes[i].isAlive());
+        }
+
+        System.out.println("\nЗавершение процессов ");
+        for (int i = 0; i < 3; i++) {
+            System.out.println("Закрыть процесс " + (i + 1) + "? (да/нет)");
+            String close = scanner.nextLine().trim().toLowerCase();
+
+            if(close.equals("да")){
+                processes[i].destroy();
+                System.out.println("Процесс закрыт.");
+            }
+            else{
+                System.out.println("Процесс оставлен работать");
             }
         }
-
-        if (minR == -1) {
-            System.out.println("Число R, удовлетворяющее условиям, не найдено. Вывод: -1");
-        } else {
-            System.out.println("Минимальное число R: " + minR);
-        }
     }
+    catch (IOException e) {
+        System.out.println("Ошибка: " + e.getMessage());
+    }
+    scanner.close();
 }
